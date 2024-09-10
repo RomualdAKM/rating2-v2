@@ -1,0 +1,97 @@
+<x-app-layout>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-lg sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <div class="flex justify-between">
+                        <a href="{{ url()->previous() }}" class="hidden md:block">
+                            <x-primary-button>
+                                Retour
+                            </x-primary-button>
+                        </a>
+                        <button onclick="generatePDF()" id="btn"
+                            class="bg-green-700 px-4 py-1 text-white rounded">Imprimer</button>
+                    </div>
+                    <h1>Voir les détails</h1>
+                    <table class="w-full mt-8 border-collapse">
+                        <tr>
+                            <td class="border border-grey-100 rounded-tl-md p-2 font-semibold">Date</td>
+                            <td class="border border-grey-100 rounded-tr-md p-2">{{ $solicitation->created_at }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-grey-100 p-2 font-semibold">Nom personnel</td>
+                            <td class="border border-grey-100 p-2">{{ $solicitation->name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-grey-100 p-2 font-semibold">Contact</td>
+                            <td class="border border-grey-100 p-2">{{ $solicitation->contact }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-grey-100 rounded-bl-md p-2 font-semibold">Email</td>
+                            <td class="border border-grey-100 rounded-br-md p-2">{{ $solicitation->email }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-grey-100 rounded-bl-md p-2 font-semibold">Objet</td>
+                            <td class="border border-grey-100 rounded-br-md p-2">{{ $solicitation->object_solicitation }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-grey-100 rounded-bl-md p-2 font-semibold">Description</td>
+                            <td class="border border-grey-100 rounded-br-md p-2">{{ $solicitation->description_solicitation }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-grey-100 rounded-bl-md p-2 font-semibold">Télécharger fichier</td>
+                            <td class="border border-grey-100 rounded-br-md p-2">
+                                @if($solicitation->file)
+                                    <a href="{{ asset('storage/' . $solicitation->file) }}" download>
+                                        
+                                        <span>
+
+                                            {{-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> --}}
+                                            Télécharger
+                                        </span>
+                                    
+                                    </a>
+                                @else
+                                    Aucun fichier disponible
+                                @endif
+                            </td>
+                        </tr>
+                        
+                       
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+    integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    function generatePDF() {
+        var element = document.getElementById("print");
+        document.getElementById('btn').style.display = "none";
+        var opt = {
+            margin: 0.3,
+            filename: 'document.pdf',
+            image: {
+                type: 'jpeg',
+                quality: 0.98
+            },
+            html2canvas: {
+                scale: 2
+            },
+            jsPDF: {
+                unit: 'in',
+                format: 'letter',
+                orientation: 'portrait'
+            }
+        };
+        html2pdf().from(element).set(opt).save();
+
+        setTimeout(function() {
+            document.getElementById('btn').style.display = 'block';
+        }, 10000);
+    }
+</script>
